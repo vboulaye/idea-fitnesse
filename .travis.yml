@@ -5,13 +5,13 @@ env:
   matrix:
   - IDEA_VERSION=15
   - IDEA_VERSION=16
-install: ./gradlew extractIdeaSdk
-script: ./gradlew test dist -Pversion=${TRAVIS_TAG:-wip} && ls build/distributions
+install: "./gradlew extractIdeaSdk"
+script: "./gradlew test dist -Pversion=${TRAVIS_TAG:-wip} && ls build/distributions"
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure: HFLxsw+X2QpVZz5mlFrr2QoKu5044uutpfzVl06114RooZpQPB5rmRJi5PEprL0VZOdFfnKquNUElJbKkk8jIiJlUDQm3FWtFcS+lA3vRRVXbT6dUaL5uzF47kYkEHcOMP6uL/jHn2DfjQoRlSgmNREgV71tJIC9E4XPEfsNkoWpcCpUncLtLi6qJPlFbT248VjSKsisYo7k9Ruhj6lwVqcUYYQY0LJ7IA4x5RcJyg0nTpoclwLFi/+burXk/OUjJzcgX8x+bQuJf0ajLWKYYz+wHBa1xVncUtH3cFpaS/TubJfAt6cUPTFz+XcAUwBpHQP9btOINHHEauX/vxeP64R7NCaF974CtXlsJzOYl7o09woCVRYogGRk3WKsxLxcK0fJ3IyEjElDTMbZPtzxV/vU4DdgZp8aP+9luC+twa3iFP3zkp0CHbGxcElO+DeshHu+YocHL1E2bBr1QXwU9cBvHRNZPgWocv/S909ZDGr5Hnc8ewudtQBSwZHaWMkLa6u3GRm1CTT1aaKD6sMQJcL+0FkObZ1ic7C5J0d2Lars4nl3QiE13xYq4MRK4HFEP0LZQyiIprsDQlvEGhgQysXXHLKBDr0pmZzDDInd5vbVHrvGHkJ+HbAFjyrJfSzFptNzr/uWoFog5DMEXLoqL/vTeNVq7Fw/XqnknhO+rtc=
+    secure: VToIzl75WQc4GR37C1RMKIzdND5hDxfehSDfCnYGz1aHLMuw869QR+N2CHxfPtPept7XlE1SURyNbNn1BTN6KWCGqXtXi/qV0doa7UWmbnmEd9qNOtsYLsTjDlFNO9dU2DOTw9YC+be90BsIsmwtoE3bpM5eq78foZe0etYxMbTpgylBLFa4oCK373z59EwcbEWN+hXzU2kRJJgObUHYJwa9RDS3bhD1mAtdhA///DvBNuzVuCRnp/bsiLX4exbxvv4JU7DYF7Hu3dVfoHPMCFch4lO/2X5ge9+cqHSwsaEegpXnqshOaAVfD51iNAh1ENVxuV930dbtXGi8KENgMrwqADqvbWf1oK+sW8PN0LtAJLSiVm7B5TEZukfexmJOKYDRuG2RrIo8Pa+mDN9bhjbnDlionAp/ID0+++dfDb+sgu1PQi/sTx/Ni3y5kPfWD92upq5cxzJ0764HYc6z9IREXqTIfnujRxjVMAj3WsDkz3p2yg8SdSZ7mCxpmW+Isf5V8ha1SXkavejvBcntuEg7uBUIy/oNvpQvZqx4oOfBCk88JG2vwNRNUjJe6tWeZybCgn+mtgRLfe21EyyVLkIPELeGRZ5NTU0PGq5LdpHRGHj415rQx3ZervznLSh1+ixwg/fH9vusV2L03UX/r6S9tXLJaQaZ1ZgYH/K/dDo=
   file: build/distributions/idea-fitnesse-${TRAVIS_TAG}.zip
   on:
     repo: fitnesse/idea-fitnesse
@@ -20,5 +20,5 @@ deploy:
 sudo: false
 cache:
   directories:
-  - $HOME/.gradle
+  - "$HOME/.gradle"
   - lib
