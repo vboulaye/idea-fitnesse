@@ -89,21 +89,20 @@ dependencies {
 sourceCompatibility = IDEA.JAVA
 targetCompatibility = IDEA.JAVA
 
-task downloadIdeaSdk(type: de.undercouch.gradle.tasks.download.Verify) {
-    description 'Download IDEA SDK from the interwebz'
-    doFirst {
-        download {
-            src IDEA.URL
-            dest file("lib/idea-${IDEA.ID}.tar.gz")
-            overwrite false
-        }
-    }
+task downloadIdeaSdk(type: Download) {
+    src IDEA.URL
+    dest file("lib/idea-${IDEA.ID}.tar.gz")
+    overwrite false
+}
+
+task verifyIdeaSdk(type: Verify, dependsOn: downloadIdeaSdk) {
+    description 'Check downloaded IDEA SDK'
     src file("lib/idea-${IDEA.ID}.tar.gz")
     algorithm 'SHA-256'
     checksum IDEA.CSUM
 }
 
-task extractIdeaSdk(type: Copy, dependsOn: [downloadIdeaSdk]) {
+task extractIdeaSdk(type: Copy, dependsOn: verifyIdeaSdk) {
     description 'Extract IDEA SDK'
     def zipFile = file("lib/idea-${IDEA.ID}.tar.gz")
     def outputDir = file("lib/sdk")
