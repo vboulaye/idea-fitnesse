@@ -90,6 +90,7 @@ sourceCompatibility = IDEA.JAVA
 targetCompatibility = IDEA.JAVA
 
 task downloadIdeaSdk(type: Download) {
+    description 'Download IDEA SDK from the interwebz'
     src IDEA.URL
     dest file("lib/idea-${IDEA.ID}.tar.gz")
     overwrite false
