@@ -27,7 +27,7 @@ class FitnesseLexer extends LexerBase {
     this.startOffset = startOffset
     this.endOffset = endOffset
     this.state = initialState
-    
+
     val input: CharSequence = buffer.subSequence(startOffset, endOffset)
     val currentPage: ParsingPage = new LexerParsingPage
 
@@ -58,7 +58,7 @@ class FitnesseLexer extends LexerBase {
         case SymbolType.SymbolList   => advance()
         case Table.tableRow          => advance()
         case Table.tableCell         => advance()
-        case table: ColoredSlimTable =>
+        case table: Table            =>
           // Fetch new simples to ensure the table contents are properly parsed.
           symbolList = LexerSymbol(FitnesseTokenType.TABLE_START, symbol.getStartOffset, symbol.getChildren.get(0).getStartOffset) :: fetchNextSymbols()
         case _ =>
@@ -108,7 +108,7 @@ class FitnesseLexer extends LexerBase {
         case SymbolType.Italic     => FitnesseTokenType.ITALIC
         case SymbolType.Whitespace => FitnesseTokenType.WHITE_SPACE
         case SymbolType.Newline    => FitnesseTokenType.LINE_TERMINATOR
-        case _: ColoredSlimTable   => FitnesseTokenType.TABLE_START
+        case _: Table              => FitnesseTokenType.TABLE_START
         case Table.tableRow        => FitnesseTokenType.ROW_START
         case Table.tableCell       => FitnesseTokenType.CELL_START
         case SymbolType.Colon      => FitnesseTokenType.COLON
@@ -142,7 +142,7 @@ object FitnesseLexer {
     val startOffset = if (lastChild(symbol).getEndOffset == symbol.getEndOffset) lastChild(symbol).getStartOffset else lastChild(symbol).getEndOffset
 
     symbol.getType match {
-      case _ : ColoredSlimTable      => Some(LexerSymbol(FitnesseTokenType.TABLE_END, startOffset, symbol.getEndOffset))
+      case _ : Table                 => Some(LexerSymbol(FitnesseTokenType.TABLE_END, startOffset, symbol.getEndOffset))
       case _ : Collapsible           => Some(LexerSymbol(FitnesseTokenType.COLLAPSIBLE_END, lastChild(symbol).getEndOffset, symbol.getEndOffset))
       case s if s eq Table.tableRow  => Some(LexerSymbol(FitnesseTokenType.ROW_END, startOffset, symbol.getEndOffset))
       case s if s eq Table.tableCell => Some(LexerSymbol(FitnesseTokenType.CELL_END, startOffset, symbol.getEndOffset))
