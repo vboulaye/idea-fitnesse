@@ -4,8 +4,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'scala'
     id 'idea'
-    id 'com.github.maiflai.scalatest' version '0.23'
-    id "de.undercouch.download" version "3.4.3"
+    id 'com.github.maiflai.scalatest' version '0.25'
+    id "de.undercouch.download" version "4.0.2"
 }
 
 description = """<p>Language support for <a href="http://fitnesse.org>">FitNesse</a>, the fully integrated standalone wiki and acceptance testing framework.</p>
@@ -89,21 +89,21 @@ dependencies {
 sourceCompatibility = IDEA.JAVA
 targetCompatibility = IDEA.JAVA
 
-task downloadIdeaSdk(type: de.undercouch.gradle.tasks.download.Verify) {
+task downloadIdeaSdk(type: Download) {
     description 'Download IDEA SDK from the interwebz'
-    doFirst {
-        download {
-            src IDEA.URL
-            dest file("lib/idea-${IDEA.ID}.tar.gz")
-            overwrite false
-        }
-    }
+    src IDEA.URL
+    dest file("lib/idea-${IDEA.ID}.tar.gz")
+    overwrite false
+}
+
+task verifyIdeaSdk(type: Verify, dependsOn: downloadIdeaSdk) {
+    description 'Check downloaded IDEA SDK'
     src file("lib/idea-${IDEA.ID}.tar.gz")
     algorithm 'SHA-256'
     checksum IDEA.CSUM
 }
 
-task extractIdeaSdk(type: Copy, dependsOn: [downloadIdeaSdk]) {
+task extractIdeaSdk(type: Copy, dependsOn: verifyIdeaSdk) {
     description 'Extract IDEA SDK'
     def zipFile = file("lib/idea-${IDEA.ID}.tar.gz")
     def outputDir = file("lib/sdk")
