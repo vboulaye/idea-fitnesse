@@ -315,4 +315,51 @@ class TableLexerSuite extends LexerSuite {
       lexWithOffset("!||\n||")
     }
   }
+
+  test("Formatted cells should not make table offsets overlap") {
+    assertResult(
+      List(
+        (FitnesseTokenType.TABLE_START, 0, 1, "|"),
+        (FitnesseTokenType.BOLD,        1, 8, "'''E'''"),
+        (FitnesseTokenType.CELL_END,    8, 9, "|"),
+        (FitnesseTokenType.ITALIC,      9, 14, "''A''"),
+        (FitnesseTokenType.TABLE_END,   14, 15, "|")
+      )) {
+      lexWithOffset("|'''E'''|''A''|")
+    }
+  }
+
+  test("Formatted cells should not make table offsets overlap with multiple rows") {
+    assertResult(
+      List(
+        (FitnesseTokenType.TABLE_START, 0, 1, "|"),
+        (FitnesseTokenType.BOLD,        1, 8, "'''E'''"),
+        (FitnesseTokenType.CELL_END,    8, 9, "|"),
+        (FitnesseTokenType.ITALIC,      9, 14, "''A''"),
+        (FitnesseTokenType.ROW_END,     14, 17, "|\n|"),
+        (FitnesseTokenType.BOLD,        17, 24, "'''E'''"),
+        (FitnesseTokenType.CELL_END,    24, 25, "|"),
+        (FitnesseTokenType.ITALIC,      25, 30, "''A''"),
+        (FitnesseTokenType.TABLE_END,   30, 31, "|")
+      )) {
+      lexWithOffset("|'''E'''|''A''|\n|'''E'''|''A''|")
+    }
+  }
+
+  test("Formatted cells should not make table offsets overlap with multiple rows and text after") {
+    assertResult(
+      List(
+        (FitnesseTokenType.TABLE_START, 0, 1, "|"),
+        (FitnesseTokenType.BOLD,        1, 8, "'''E'''"),
+        (FitnesseTokenType.CELL_END,    8, 9, "|"),
+        (FitnesseTokenType.ITALIC,      9, 14, "''A''"),
+        (FitnesseTokenType.ROW_END,     14, 17, "|\n|"),
+        (FitnesseTokenType.BOLD,        17, 24, "'''E'''"),
+        (FitnesseTokenType.CELL_END,    24, 25, "|"),
+        (FitnesseTokenType.ITALIC,      25, 30, "''A''"),
+        (FitnesseTokenType.TABLE_END,   30, 32, "|\n")
+      )) {
+      lexWithOffset("|'''E'''|''A''|\n|'''E'''|''A''|\n")
+    }
+  }
 }
