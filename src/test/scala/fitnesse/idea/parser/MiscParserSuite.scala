@@ -49,16 +49,18 @@ class MiscParserSuite extends ParserSuite {
       Node(FitnesseElementType.FILE, List(
         Node(FitnesseElementType.COLLAPSIBLE, List(
           Leaf(FitnesseTokenType.COLLAPSIBLE_START, "!* "),
-          Leaf(FitnesseTokenType.WORD, "title\n"),
+          Leaf(FitnesseTokenType.WORD, "title"),
+          Leaf(FitnesseTokenType.WHITE_SPACE, "\n"),
           Node(TableElementType.DECISION_TABLE, List(
             Leaf(FitnesseTokenType.TABLE_START,"|"),
             Node(FitnesseElementType.ROW, List(
               Node(FitnesseElementType.FIXTURE_CLASS, List(
                 Leaf(FitnesseTokenType.WORD, "abc")
               ))
-            ))
+            )),
+            Leaf(FitnesseTokenType.TABLE_END,"|\n")
           )),
-          Leaf(FitnesseTokenType.COLLAPSIBLE_END, "|\n*!\n")
+          Leaf(FitnesseTokenType.COLLAPSIBLE_END, "*!\n")
         ))
       ))
     ) {

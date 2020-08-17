@@ -44,6 +44,7 @@ class FitnesseLexer extends LexerBase {
     symbolList = fetchNextSymbols()
 
     // if TABLE_START, ROW_START -> reduce to TABLE_START, fix offsets
+    // if COLLAPSIBLE_START, title ->  fix offsets
     // drop all CELL_START | ROW_START -> advance
     // CELL_END, ROW_END -> advance to ROW_END
     // ROW_END, TABLE_END -> advance to TABLE_END
@@ -61,6 +62,12 @@ class FitnesseLexer extends LexerBase {
         case table: Table            =>
           // Fetch new simples to ensure the table contents are properly parsed.
           symbolList = LexerSymbol(FitnesseTokenType.TABLE_START, symbol.getStartOffset, symbol.getChildren.get(0).getStartOffset) :: fetchNextSymbols()
+        case _: Collapsible            =>
+          // Fetch new simples to ensure the collapsible contents are properly parsed.
+          val title :: tail = fetchNextSymbols()
+          val titleEnd = title.getChildren.last.getEndOffset
+          val startAfter = previousEnd(symbol, titleEnd, title.getEndOffset)
+          symbolList = LexerSymbol(FitnesseTokenType.COLLAPSIBLE_START, symbol.getStartOffset, title.getStartOffset) :: title :: LexerSymbol(FitnesseTokenType.LINE_TERMINATOR, startAfter, startAfter + 1) :: tail
         case _ =>
       }
       case _ =>
@@ -139,13 +146,20 @@ object FitnesseLexer {
   case class LexerSymbol(elementType: IElementType, start: Int, end: Int) extends Symbol(new SymbolType(elementType.toString), "", start, end)
 
   def terminatorFor(symbol: Symbol): Option[Symbol] = {
-    val startOffset = if (lastChild(symbol).getEndOffset == symbol.getEndOffset) lastChild(symbol).getStartOffset else lastChild(symbol).getEndOffset
+    val lastNestedChild : Symbol = lastChild(symbol)
+    val symbolEndOffset = symbol.getEndOffset
+    val startOffset = if (lastNestedChild.getEndOffset == symbolEndOffset) lastNestedChild.getStartOffset else lastNestedChild.getEndOffset
+    val previousEndOffset = previousEnd(symbol, startOffset, symbolEndOffset)
 
     symbol.getType match {
-      case _ : Table                 => Some(LexerSymbol(FitnesseTokenType.TABLE_END, startOffset, symbol.getEndOffset))
-      case _ : Collapsible           => Some(LexerSymbol(FitnesseTokenType.COLLAPSIBLE_END, lastChild(symbol).getEndOffset, symbol.getEndOffset))
-      case s if s eq Table.tableRow  => Some(LexerSymbol(FitnesseTokenType.ROW_END, startOffset, symbol.getEndOffset))
-      case s if s eq Table.tableCell => Some(LexerSymbol(FitnesseTokenType.CELL_END, startOffset, symbol.getEndOffset))
+      case _ : Table                 => Some(LexerSymbol(FitnesseTokenType.TABLE_END, previousEndOffset, symbolEndOffset))
+      case _ : Collapsible           => {
+        val childPreviousEndOffset = previousEnd(symbol.getChildren.last, startOffset, symbol.getChildren.last.getEndOffset)
+        val collEndStart = if (symbolEndOffset - childPreviousEndOffset > 1) childPreviousEndOffset else lastNestedChild.getEndOffset
+        Some(LexerSymbol(FitnesseTokenType.COLLAPSIBLE_END, collEndStart, symbolEndOffset))
+      }
+      case s if s eq Table.tableRow  => Some(LexerSymbol(FitnesseTokenType.ROW_END, previousEndOffset, symbolEndOffset))
+      case s if s eq Table.tableCell => Some(LexerSymbol(FitnesseTokenType.CELL_END, previousEndOffset, symbolEndOffset))
       case _ => None
     }
   }
@@ -153,6 +167,13 @@ object FitnesseLexer {
   private def lastChild(symbol: Symbol): Symbol = {
     val children = symbol.getChildren
     if (children.isEmpty || children.exists(_.getStartOffset == -1)) symbol else lastChild(children.last)
+  }
+
+  private def previousEnd(symbol: Symbol, previousMax: Int, endOffset: Int): Int = {
+    val children = symbol.getChildren
+    val symbolEnd = symbol.getEndOffset
+    val currentEnd = if ((symbolEnd < endOffset) && (symbolEnd > previousMax)) symbolEnd else previousMax
+    if (children.isEmpty || children.exists(_.getStartOffset == -1)) currentEnd else previousEnd(children.last, currentEnd, endOffset)
   }
 }
 
