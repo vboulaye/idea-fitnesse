@@ -6,6 +6,10 @@
   <change-notes>
     <![CDATA[<pre>
 
+1.11.0
+
+ * Added plugin logo (https://github.com/gshakhn/idea-fitnesse/issues/51).
+
 1.10.1
 
  * Fixed plugin meta-data.
