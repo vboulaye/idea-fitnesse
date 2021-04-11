@@ -6,6 +6,10 @@
   <change-notes>
     <![CDATA[<pre>
 
+1.12.0
+
+ * Upgraded for FitNesse 20210410.
+
 1.11.0
 
  * Fixed parsing of wiki files to ensure continous tokens, required for IntelliJ 2020.2. See https://github.com/gshakhn/idea-fitnesse/issues/55.
