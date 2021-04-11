@@ -1,12 +1,13 @@
 package fitnesse.idea.lexer
 
 import java.util
-
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.tree.IElementType
+import fitnesse.wikitext._
 import fitnesse.wikitext.parser._
 import fitnesse.idea.lexer.FitnesseLexer._
 
+import java.util.Optional
 import scala.collection.JavaConversions._
 
 class FitnesseLexer extends LexerBase {
@@ -187,7 +188,7 @@ class LexerParsingPage extends ParsingPage(new LexerSourcePage) {
     super.putVariable(name, value)
   }
 
-  override def findVariable(name: String): Maybe[String] = {
+  override def findVariable(name: String): Optional[String] = {
     super.findVariable(name)
   }
 }
@@ -245,15 +246,8 @@ class LexerSourcePage extends SourcePage {
     throw new IllegalStateException("FitNesse plugin: method LexerParsingPage.getProperty() has not been implemented")
   }
 
-  override def makeUrl(wikiWordPath: String): String = {
-    throw new IllegalStateException("FitNesse plugin: method LexerParsingPage.makeUrl() has not been implemented")
-  }
-
   override def compareTo(o: SourcePage): Int = {
     throw new IllegalStateException("FitNesse plugin: method LexerParsingPage.compareTo() has not been implemented")
   }
 
-  override def getSymbols(symbolType: SymbolType): util.List[Symbol] = {
-    List.empty[Symbol]
-  }
 }
