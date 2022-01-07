@@ -25,7 +25,7 @@ class DecisionTableSuite extends PsiSuite {
   val myPsiMethodFancyQueryName = mock[PsiMethod]
 
   var table: Table = null
-  
+
   override protected def beforeAll(): Unit = {
     super.beforeAll()
 
@@ -123,7 +123,7 @@ class DecisionTableSuite extends PsiSuite {
   test("scenario reference") {
     val myScenarioCallMe: ScenarioName = ScenarioNameImpl(new ScenarioNameStubImpl(mock[StubBase[Table]], "callMe", List("arg1", "arg2")))
     val output = createTable("| call me |").fixtureClass.get
-    when(myStubIndex.get(m_eq(ScenarioNameIndex.KEY), m_eq("CallMe"), any[Project], any[GlobalSearchScope])).thenReturn(List(myScenarioCallMe).asJava)
+    when(myStubIndex.get(m_eq(ScenarioNameIndex.KEY), m_eq("CallMe"), any[Project], any[GlobalSearchScope])).thenReturn(List(myScenarioCallMe).asJava, null)
     bypassShortNameCache()
     assertResult(myScenarioCallMe) {
       val refs = output.getReferences

@@ -95,6 +95,9 @@ class FitNesseTestRunConfigurationProducer extends JavaRunConfigurationProducerB
 
 class FitnesseRunConfigurationType extends ConfigurationType {
   val fitnesseRunConfigurationFactory: ConfigurationFactory = new ConfigurationFactory(this) {
+    val ID = "FitnesseRunConfigurationFactory"
+
+    override def getId = ID
 
     override def getIcon: Icon = FitnesseFileType.FILE_ICON
 
@@ -114,7 +117,7 @@ class FitnesseRunConfigurationType extends ConfigurationType {
 
 object FitnesseRunConfigurationType {
   val ID = "FitnesseRunConfigurationType"
-  
+
   def INSTANCE = try {
     ConfigurationTypeUtil.findConfigurationType(classOf[FitnesseRunConfigurationType])
   } catch {

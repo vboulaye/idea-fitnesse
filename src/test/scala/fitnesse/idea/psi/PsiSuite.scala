@@ -1,9 +1,9 @@
 package fitnesse.idea.psi
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
-
 import com.intellij.lang.FileASTNode
 import com.intellij.mock.{MockPsiDocumentManager, MockResolveScopeManager}
+import com.intellij.openapi.Disposable
 import com.intellij.psi._
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.search.{GlobalSearchScope, ProjectScopeBuilder, ProjectScopeBuilderImpl, PsiShortNamesCache}
@@ -64,7 +64,11 @@ trait PsiSuite extends ParserSuite with MockitoSugar {
     assert(fileNode.isParsed)
     val indexFile: File = File.createTempFile("idea", "fitnesse")
     val persistentStringEnumerator = new PersistentStringEnumerator(indexFile)
-    val stubSerializationHelper = new StubSerializationHelper(persistentStringEnumerator)
+    val myTestRootDisposable = new Disposable {
+      def dispose(): Unit = {
+      }
+    }
+    val stubSerializationHelper = new StubSerializationHelper(persistentStringEnumerator, myTestRootDisposable)
 
     stubSerializationHelper.assignId(PsiFileStubImpl.TYPE)
     stubSerializationHelper.assignId(FitnesseElementType.DECISION_INPUT)
