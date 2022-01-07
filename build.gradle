@@ -24,7 +24,7 @@ allprojects {
 
 ext {
     FITNESSE_VERSION = '20210410'
-    SCALA_VERSION = '2.11.8'
+    SCALA_VERSION = '2.12.8'
 }
 
 // Pick the Linux version, as it is a tar.gz, since we can simply extract that
@@ -41,18 +41,24 @@ def IDEA_VERSIONS = [
         CSUM: '4238391a3e2ffdc7ada51e850702330ea172c6bf0bb859d2f269e3f2d45e6920',
         JAVA: '1.8'
     ],
-    16: [
-        ID: 'IC-145.2070.6',
-        URL: 'https://download.jetbrains.com/idea/ideaIC-2016.1.4.tar.gz',
-        CSUM: 'b64767d87dbaae7e1511666fc032cf356e326770090e3a141969909d09670345',
-        JAVA: '1.8'
-    ],
+//    16: [
+//        ID: 'IC-145.2070.6',
+//        URL: 'https://download.jetbrains.com/idea/ideaIC-2016.1.4.tar.gz',
+//        CSUM: 'b64767d87dbaae7e1511666fc032cf356e326770090e3a141969909d09670345',
+//        JAVA: '1.8'
+//    ],
     17: [
         ID: 'IC-173.4710.11',
         URL: 'https://download.jetbrains.com/idea/ideaIC-2017.3.7.tar.gz',
         CSUM: '1b2f7084ffabb6bde29edf3a33ed3cae56fcb72bca2ca5ebab925730528cb3b4',
-        JAVA: '1.8'
-    ]
+        JAVA: '11'
+    ],
+//    21: [
+//            ID: 'IC-173.4710.11',
+//            URL: 'https://download.jetbrains.com/idea/ideaIC-2017.3.7.tar.gz',
+//            CSUM: '1b2f7084ffabb6bde29edf3a33ed3cae56fcb72bca2ca5ebab925730528cb3b4',
+//            JAVA: '1.8'
+//    ]
 ]
 
 def idea_version = System.getenv('IDEA_VERSION')
@@ -60,6 +66,7 @@ def IDEA = IDEA_VERSIONS[idea_version ? idea_version.toInteger() : 17]
 
 def IDEA_SDK_NAME = "IntelliJ IDEA Community Edition ${IDEA.ID}"
 def IDEA_LIB = "lib/sdk/idea-${IDEA.ID}/lib"
+def IDEA_JRE_LIB = "lib/sdk/idea-${IDEA.ID}/jre64/lib"
 
 configurations {
     ideaSdk
@@ -67,6 +74,7 @@ configurations {
         // dependencies bundled with the plugin
         transitive = false
     }
+
 }
 
 def jdkHome = System.getenv("JAVA_HOME")
@@ -78,10 +86,17 @@ dependencies {
     bundle "org.fitnesse:fitnesse:${FITNESSE_VERSION}:standalone"
     bundle project('idea-fitnesse_rt')
 
+    compile fileTree(dir: IDEA_JRE_LIB,    include: ['*.jar'])
     compile configurations.bundle
+//    compile fileTree(dir: IDEA_LIB,    include: ['*.jar'])
     compile fileTree(dir: IDEA_LIB,
                      include: ['openapi.jar', 'idea.jar', 'util.jar', 'extensions.jar', 'annotations.jar',
+                          //   'forms_rt.jar', 'javac2.jar','platform-api.jar',
                                'jdom.jar', 'picocontainer.jar', 'trove4j.jar',])
+//                              'jdom.jar', 'picocontainer.jar', 'trove4j.jar', 'platform-api.jar',]
+//                              )
+//    compile fileTree(dir: "lib/sdk/idea-${IDEA.ID}/plugins/java/lib",
+//            include: ['*.jar'])
 
     testCompile configurations.ideaSdk
     testCompile 'org.scalatest:scalatest_2.11:3.0.1'

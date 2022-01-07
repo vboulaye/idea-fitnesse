@@ -143,8 +143,9 @@ class FitnesseRunConfiguration(testFrameworkName: String, project: Project, fact
 
     // Check if test suite exists under FitnesseRoot
     val properties = new Properties
-    properties.putAll(System.getProperties)
-    properties.putAll(ConfigurationParameter.loadProperties(new File(workingDir, Option(configFile).getOrElse(ContextConfigurator.DEFAULT_CONFIG_FILE))))
+    System.getProperties.forEach((k, v) => properties.put(k, v))
+    val properties1 = ConfigurationParameter.loadProperties(new File(workingDir, Option(configFile).getOrElse(ContextConfigurator.DEFAULT_CONFIG_FILE)))
+    properties1.forEach((k, v) => properties.put(k, v))
     val componentFactory = new ComponentFactory(properties)
 
     val wikiPageFactory = componentFactory.createComponent(WIKI_PAGE_FACTORY_CLASS, classOf[FileSystemPageFactory])
