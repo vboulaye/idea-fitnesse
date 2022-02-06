@@ -13,6 +13,7 @@ import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.{SMTRunnerConsoleProperties, SMTestLocator}
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.util.{JavaParametersUtil, ProgramParametersConfigurator, ProgramParametersUtil}
+import com.intellij.openapi.application.{ApplicationManager, ModalityState}
 import com.intellij.openapi.extensions.Extensions
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.{SettingsEditor, SettingsEditorGroup}
@@ -120,9 +121,17 @@ class FitnesseRunConfiguration(testFrameworkName: String, project: Project, fact
 
       @throws(classOf[ExecutionException])
       override def execute(executor: Executor, runner: ProgramRunner[_ <: RunnerSettings]): ExecutionResult = {
-        val processHandler: ProcessHandler = startProcess
-        val console: ConsoleView = createConsole(executor, processHandler)
-        new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor):_*)
+        var result: DefaultExecutionResult = null
+
+        ApplicationManager.getApplication.invokeAndWait(new Runnable {
+           override def run(): Unit = {
+            val processHandler: ProcessHandler = startProcess
+            val console: ConsoleView = createConsole(executor, processHandler)
+            result = new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor):_*)
+          }
+        }, ModalityState.defaultModalityState)
+
+        result
       }
     }
   }
