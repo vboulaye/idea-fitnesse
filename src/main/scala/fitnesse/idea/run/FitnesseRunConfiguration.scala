@@ -170,6 +170,7 @@ class FitnesseRunConfiguration(testFrameworkName: String, project: Project, fact
     super.readExternal(element)
     wikiPageName = JDOMExternalizer.readString(element, "wikiPageName")
     fitnesseRoot = JDOMExternalizer.readString(element, "fitnesseRoot")
+    useFitNesseJar = JDOMExternalizer.readBoolean(element, "useFitNesseJar")
   }
 
   @throws[WriteExternalException]
@@ -177,5 +178,6 @@ class FitnesseRunConfiguration(testFrameworkName: String, project: Project, fact
     super.writeExternal(element)
     JDOMExternalizer.write(element, "wikiPageName", wikiPageName)
     JDOMExternalizer.write(element, "fitnesseRoot", fitnesseRoot)
+    JDOMExternalizer.write(element, "useFitNesseJar", useFitNesseJar)
   }
 }
