@@ -98,6 +98,8 @@ class FitnesseRunConfigurationType extends ConfigurationType {
 
     override def getIcon: Icon = FitnesseFileType.FILE_ICON
 
+    override def getId: String = getName
+
     override def createTemplateConfiguration(project: Project) = new FitnesseRunConfiguration(getDisplayName(), project, this)
   }
 
