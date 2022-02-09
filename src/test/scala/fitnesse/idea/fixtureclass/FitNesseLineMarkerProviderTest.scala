@@ -3,6 +3,7 @@ package fitnesse.idea.fixtureclass
 import java.util
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.mock.MockPsiFile
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.light.JavaIdentifier
@@ -23,6 +24,7 @@ class FitNesseLineMarkerProviderTest extends PsiSuite {
     when(method.getParent).thenReturn(clazz)
     when(method.getText).thenReturn("methodName")
     when(method.getTextRange).thenReturn(new TextRange(1, 3))
+    when(method.getContainingFile).thenReturn(new MockPsiFile(myPsiManager))
     val myFixtureClass = mock[FixtureClass]
     when(myStubIndex.get(m_eq(FixtureClassIndex.KEY), m_eq("methodName"), any[Project], any[GlobalSearchScope])).thenReturn(List(myFixtureClass).asJava)
 

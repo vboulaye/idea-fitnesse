@@ -15,7 +15,7 @@ description = """<p>Language support for <a href="http://fitnesse.org>">FitNesse
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             url "http://dl.bintray.com/fitnesse/edge"
         }
@@ -46,11 +46,17 @@ def IDEA_VERSIONS = [
         URL: 'https://download.jetbrains.com/idea/ideaIC-2016.1.4.tar.gz',
         CSUM: 'b64767d87dbaae7e1511666fc032cf356e326770090e3a141969909d09670345',
         JAVA: '1.8'
+    ],
+    17: [
+        ID: 'IC-173.4710.11',
+        URL: 'https://download.jetbrains.com/idea/ideaIC-2017.3.7.tar.gz',
+        CSUM: '1b2f7084ffabb6bde29edf3a33ed3cae56fcb72bca2ca5ebab925730528cb3b4',
+        JAVA: '1.8'
     ]
 ]
 
 def idea_version = System.getenv('IDEA_VERSION')
-def IDEA = IDEA_VERSIONS[idea_version ? idea_version.toInteger() : 15]
+def IDEA = IDEA_VERSIONS[idea_version ? idea_version.toInteger() : 17]
 
 def IDEA_SDK_NAME = "IntelliJ IDEA Community Edition ${IDEA.ID}"
 def IDEA_LIB = "lib/sdk/idea-${IDEA.ID}/lib"
@@ -78,11 +84,11 @@ dependencies {
                                'jdom.jar', 'picocontainer.jar', 'trove4j.jar',])
 
     testCompile configurations.ideaSdk
-    testCompile 'org.scalatest:scalatest_2.11:2.2.5'
+    testCompile 'org.scalatest:scalatest_2.11:2.2.6'
     testCompile 'org.mockito:mockito-core:1.10.19'
 
     // Scalatest requires:
-    testRuntime 'org.pegdown:pegdown:1.1.0'
+    testRuntime 'org.pegdown:pegdown:1.6.0'
     testRuntime files("$jdkHome/lib/tools.jar")
 }
 
